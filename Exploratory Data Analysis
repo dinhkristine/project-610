@@ -1,0 +1,41 @@
+---
+title: "Exploratory Data Analysis of Housing Price"
+author: "Yao Chen"
+---
+
+#import data
+  
+library("ggplot2")
+library("tidyverse")
+
+setwd("C:/Users/99419/Documents/course_documents/stat610/project") 
+mydata <- read.csv("kc_house_data.csv")
+
+##clean data 
+colnames(mydata)
+#[1] "id"            "date"          "price"         "bedrooms"      "bathrooms"     "sqft_living"   "sqft_lot"      "floors"       
+#[9] "waterfront"    "view"          "condition"     "grade"         "sqft_above"    "sqft_basement" "yr_built"      "yr_renovated" 
+#[17] "zipcode"       "lat"           "long"          "sqft_living15" "sqft_lot15"   
+
+df <- mydata[,-c(1,7,9,10,16,18:21)] ##we have 21 columns as shown above,  delete some since it's meaningless.
+colnames(df) 
+[1] "date"          "price"         "bedrooms"      "bathrooms"     "sqft_living"   "floors"        "condition"     "grade"        
+[9] "sqft_above"    "sqft_basement" "yr_built"      "zipcode"     
+summary(df) ##shows min, max, mean, median,quantile. 
+boxplot(df[,4], horizontal = T,  col = "bisque") ##check outliers
+
+q1<-quantile(df$bedrooms, 0.001)      
+q99<-quantile(df$bedrooms, 0.999)      
+df[df$bedrooms<q1,]$bedrooms<-q1
+df[df$bedrooms>q99,]$bedrooms<-q99
+summary(df$bedrooms)            
+##still thinking out how to remove outliers once for all columns 
+
+cor(df) ##show correlation between variables
+
+#histograms
+
+hist(log(df$price))
+hist(df$bedrooms)
+hist(df$bathrooms)
+## if  you need more histograms, just use hist() with other variables.
